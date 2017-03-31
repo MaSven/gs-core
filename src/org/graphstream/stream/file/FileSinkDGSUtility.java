@@ -35,10 +35,14 @@ import java.awt.Color;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.graphstream.graph.CompoundAttribute;
 
 public class FileSinkDGSUtility {
+	private static final String S = "\"%s\"";
+
 	protected static String formatStringForQuoting(String str) {
 		return str.replaceAll("(^|[^\\\\])\"", "$1\\\\\"");
 	}
@@ -84,10 +88,10 @@ public class FileSinkDGSUtility {
 
 		if (value instanceof CharSequence) {
 			if (value instanceof String)
-				return String.format("\"%s\"",
+				return String.format(S,
 						formatStringForQuoting((String) value));
 			else
-				return String.format("\"%s\"", (CharSequence) value);
+				return String.format(S, (CharSequence) value);
 		} else if (value instanceof Number) {
 			Number nval = (Number) value;
 
@@ -97,13 +101,14 @@ public class FileSinkDGSUtility {
 			else
 				return String.format(Locale.US, "%f", nval.doubleValue());
 		} else if (value instanceof Boolean) {
-			return String.format(Locale.US, "%b", ((Boolean) value));
+			return String.format(Locale.US, "%b", (Boolean) value);
 		} else if (value instanceof Character) {
-			return String.format("\"%c\"", ((Character) value).charValue());
+			Character valueBuffer = (char) value;
+			return String.format("\"%c\"", valueBuffer);
 		} else if (value instanceof Object[]) {
-			Object array[] = (Object[]) value;
+			Object []array = (Object[]) value;
 			int n = array.length;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 
 			if (array.length > 0)
 				sb.append(valueString(array[0]));
@@ -116,30 +121,30 @@ public class FileSinkDGSUtility {
 			return sb.toString();
 		} else if (value instanceof HashMap<?, ?>
 				|| value instanceof CompoundAttribute) {
-			HashMap<?, ?> hash;
+			Map<?, ?> hash;
 
 			if (value instanceof CompoundAttribute)
-				hash = ((CompoundAttribute) value).toHashMap();
+				hash = ((CompoundAttribute) value).toMap();
 			else
-				hash = (HashMap<?, ?>) value;
+				hash = (Map<?, ?>) value;
 
-			return hashToString(hash);
+			return mapToString(hash);
 		} else if (value instanceof Color) {
 			Color c = (Color) value;
 			return String.format("#%02X%02X%02X%02X", c.getRed(), c.getGreen(),
 					c.getBlue(), c.getAlpha());
 		} else {
-			return String.format("\"%s\"", value.toString());
+			return String.format(S, value.toString());
 		}
 	}
 
-	protected static String hashToString(HashMap<?, ?> hash) {
-		StringBuilder sb = new StringBuilder();
+	protected static String mapToString(Map<?, ?> hash) {
+		StringBuilder sb = new StringBuilder(hash.keySet().size());
 
 		sb.append("[ ");
 
-		for (Object key : hash.keySet()) {
-			sb.append(attributeString(key.toString(), hash.get(key), false));
+		for (Entry<?, ?> entry : hash.entrySet()) {
+			sb.append(attributeString(entry.getKey().toString(),entry.getValue(), false));
 			sb.append(",");
 		}
 

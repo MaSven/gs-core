@@ -35,6 +35,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,11 +47,13 @@ import org.graphstream.graph.implementations.MultiGraph;
 import org.junit.Test;
 
 public class TestElement {
+	private Graph graph;
+	
 	@Test
 	public void testElementSimpleAttributes() {
-		Graph graph = new MultiGraph("g1");
+		prepareGraph();
 
-		Node A = graph.addNode("A");
+		Node A = this.graph.addNode("A");
 
 		assertEquals("A", A.getId());
 		assertEquals(0, A.getAttributeCount());
@@ -97,9 +100,9 @@ public class TestElement {
 
 	@Test
 	public void testElementValueAttributes() {
-		Graph graph = new MultiGraph("g1");
+		prepareGraph();
 
-		Node A = graph.addNode("A");
+		Node A = this.graph.addNode("A");
 
 		assertEquals("A", A.getId());
 		assertEquals(0, A.getAttributeCount());
@@ -136,9 +139,24 @@ public class TestElement {
 		assertEquals(3.1415, A.getAttribute("pi"));
 
 		A.setAttribute("pi", "3.1415");
-		
+
 		assertEquals(3.1415, A.getNumber("pi"), 0);
-		
+		// Negative number
+		final String negative = "negative";
+		final double negativeNumber = 3.1415;
+		A.setAttribute(negative, -negativeNumber);
+
+		assertEquals(3, A.getAttributeCount());
+		assertTrue(A.hasAttribute(negative));
+		assertTrue(A.hasAttribute(negative, Number.class));
+		assertFalse(A.hasLabel(negative));
+		assertTrue(A.hasNumber(negative));
+		assertFalse(A.hasVector(negative));
+		assertFalse(A.hasArray(negative));
+		assertFalse(A.hasMap(negative));
+		assertNotNull(A.getAttribute(negative));
+		assertEquals(-negativeNumber, A.getNumber(negative), 0);
+		assertEquals(-negativeNumber, A.getAttribute(negative));
 		// Vector of numbers.
 
 		ArrayList<Number> numbers = new ArrayList<>();
@@ -149,7 +167,7 @@ public class TestElement {
 
 		A.setAttribute("v", numbers);
 
-		assertEquals(3, A.getAttributeCount());
+		assertEquals(4, A.getAttributeCount());
 		assertTrue(A.hasAttribute("v"));
 		assertTrue(A.hasAttribute("v", ArrayList.class));
 		assertFalse(A.hasLabel("v"));
@@ -171,7 +189,7 @@ public class TestElement {
 
 		A.setAttribute("map", map);
 
-		assertEquals(4, A.getAttributeCount());
+		assertEquals(5, A.getAttributeCount());
 		assertTrue(A.hasAttribute("map"));
 		assertTrue(A.hasAttribute("map", HashMap.class));
 		assertFalse(A.hasLabel("map"));
@@ -193,7 +211,7 @@ public class TestElement {
 
 		A.setAttribute("ca", attr);
 
-		assertEquals(5, A.getAttributeCount());
+		assertEquals(6, A.getAttributeCount());
 		assertTrue(A.hasAttribute("ca"));
 		assertTrue(A.hasAttribute("ca", MyAttribute.class));
 		assertFalse(A.hasLabel("ca"));
@@ -214,9 +232,9 @@ public class TestElement {
 
 	@Test
 	public void testElementMultiAttributes() {
-		Graph graph = new MultiGraph("g1");
+		prepareGraph();
 
-		Node A = graph.addNode("A");
+		Node A = this.graph.addNode("A");
 
 		assertEquals("A", A.getId());
 		assertEquals(0, A.getAttributeCount());
@@ -242,9 +260,9 @@ public class TestElement {
 
 	@Test
 	public void testElementUtilityMethods() {
-		Graph graph = new MultiGraph("g1");
+		prepareGraph();
 
-		Node A = graph.addNode("A");
+		Node A = this.graph.addNode("A");
 
 		assertEquals("A", A.getId());
 		assertEquals(0, A.getAttributeCount());
@@ -255,7 +273,7 @@ public class TestElement {
 		A.setAttribute("I", "i");
 		A.setAttribute("Z", "z");
 
-		String s = A.getFirstAttributeOf(String.class,"A", "B", "C", "I", "Z");
+		String s = A.getFirstAttributeOf(String.class, "A", "B", "C", "I", "Z");
 
 		assertNotNull(s);
 		assertEquals("c", s);
@@ -265,8 +283,7 @@ public class TestElement {
 		A.setAttribute("J", 1);
 		A.setAttribute("X", 2);
 
-		Number n = A.getFirstAttributeOf(Number.class, "A", "B", "C", "I", "J",
-				"X", "Z");
+		Number n = A.getFirstAttributeOf(Number.class, "A", "B", "C", "I", "J", "X", "Z");
 
 		assertNotNull(n);
 		assertEquals(1, n);
@@ -274,9 +291,9 @@ public class TestElement {
 
 	@Test
 	public void testElementIterables() {
-		Graph graph = new MultiGraph("g1");
+		prepareGraph();
 
-		Node A = graph.addNode("A");
+		Node A = this.graph.addNode("A");
 
 		assertEquals("A", A.getId());
 		assertEquals(0, A.getAttributeCount());
@@ -299,32 +316,80 @@ public class TestElement {
 
 	@Test
 	public void testNullAttributes() {
-		Graph graph = new MultiGraph("g1");
-
-		graph.setAttribute("foo");
-		graph.setAttribute("bar", (Object) null); // Yes an attribute with a
+		
+		prepareGraph();
+		this.graph.setAttribute("foo");
+		this.graph.setAttribute("bar", (Object) null); // Yes an attribute with a
 													// null value, You can !
 
-		assertTrue(graph.hasAttribute("foo"));
-		assertTrue(graph.hasAttribute("bar"));
+		assertTrue(this.graph.hasAttribute("foo"));
+		assertTrue(this.graph.hasAttribute("bar"));
 
-		graph.removeAttribute("foo");
-		graph.removeAttribute("bar");
+		this.graph.removeAttribute("foo");
+		this.graph.removeAttribute("bar");
 
-		assertFalse(graph.hasAttribute("foo"));
-		assertFalse(graph.hasAttribute("bar"));
+		assertFalse(this.graph.hasAttribute("foo"));
+		assertFalse(this.graph.hasAttribute("bar"));
 	}
 
-	protected static class MyAttribute extends HashMap<String, String>
-			implements CompoundAttribute {
+	@Test
+	public void testCompundAttribute() {
+		prepareGraph();
+		final CompoundAttribute attribute = new MyComponent();
+		final String key = "attribute";
+		this.graph.setAttribute(key, attribute);
+		assertEquals(this.graph.getMap(key), attribute.toMap());
+	}
+	@Test
+	public void testLabelAttribute(){
+		prepareGraph();
+		final String label = "label";
+		final String key = "key";
+		this.graph.setAttribute(key, label);
+		assertEquals(label, this.graph.getLabel(key));
+	}
+	@Test
+	public void testMapAttribute(){
+		prepareGraph();
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("key", "value");
+		map.put("key2", "value2");
+		this.graph.setAttributes(map);
+		this.graph.setAttribute("null", null);
+		assertTrue(this.graph.getMap("null")==null);
+		assertTrue(this.graph.getVector("null")==null);
+		assertEquals("value",this.graph.getAttribute("key"));
+	}
+	
+	private Graph prepareGraph(){
+		this.graph = new MultiGraph("g1");
+		return this.graph;
+	}
+
+	protected static class MyAttribute extends HashMap<String, String> implements CompoundAttribute {
 		private static final long serialVersionUID = 1L;
 
 		public String getKey() {
 			return "MyAttribute";
 		}
-
-		public HashMap<?, ?> toHashMap() {
+		@Override
+		public Map<?, ?> toMap() {
 			return this;
 		}
+	}
+	
+	private static class MyComponent implements CompoundAttribute{
+		private Map<Object, Object> map = new HashMap<>();
+		@Override
+		public Map<?, ?> toMap() {
+			return  this.map;
+		}
+
+		@Override
+		public String getKey() {
+			return "MyComponent";
+		}
+		
 	}
 }

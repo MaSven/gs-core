@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 /**
  * An element is a part of a graph (node, edge, the graph itself).
  * <p>
@@ -107,7 +109,6 @@ public interface Element {
 	 * @return The object bound to the given key or null if no object match this
 	 * attribute.
 	 */
-	// Object getAttribute( String key, Class<?> clazz );
 	<T> T getAttribute(String key, Class<T> clazz);
 
 	/**
@@ -119,7 +120,6 @@ public interface Element {
 	 * @param keys  Several string naming attributes.
 	 * @return The first attribute that exists.
 	 */
-	// Object getFirstAttributeOf( Class<?> clazz, String... keys );
 	<T> T getFirstAttributeOf(Class<T> clazz, String... keys);
 
 	/**
@@ -144,21 +144,21 @@ public interface Element {
 	 * @complexity O(log(n)) with n being the number of attributes of this element.
 	 */
 	default double getNumber(String key) {
+		Double returnValue = Double.NaN;
 		Object o = getAttribute(key);
 
 		if (o != null) {
-			if (o instanceof Number)
-				return ((Number) o).doubleValue();
-
-			if (o instanceof CharSequence) {
-				try {
-					return Double.parseDouble(o.toString());
-				} catch (NumberFormatException ignored) {
+			if (o instanceof Number){
+				returnValue= ((Number)o).doubleValue();
+			}
+			if (o instanceof String) {
+				String buffer = (String)o;
+				if(NumberUtils.isCreatable(buffer)){
+					returnValue= Double.parseDouble(buffer);
 				}
 			}
 		}
-
-		return Double.NaN;
+		return returnValue;
 	}
 
 	/**
@@ -217,9 +217,9 @@ public interface Element {
 
 		if (o != null) {
 			if (o instanceof Map<?, ?>)
-				return ((Map<?, ?>) o);
+				return (Map<?, ?>) o;
 			if (o instanceof CompoundAttribute)
-				return ((CompoundAttribute) o).toHashMap();
+				return ((CompoundAttribute) o).toMap();
 		}
 
 		return null;
@@ -270,18 +270,7 @@ public interface Element {
 	default boolean hasNumber(String key) {
 		if (getAttribute(key, Number.class) != null)
 			return true;
-
-		CharSequence o = getAttribute(key, CharSequence.class);
-
-		if (o != null) {
-			try {
-				Double.parseDouble(o.toString());
-				return true;
-			} catch (NumberFormatException ignored) {
-			}
-		}
-
-		return false;
+		return NumberUtils.isCreatable(getAttribute(key,String.class));
 	}
 
 	/**
@@ -296,7 +285,7 @@ public interface Element {
 	default boolean hasVector(String key) {
 		List<?> o = getAttribute(key, List.class);
 
-		if (o != null && o.size() > 0) {
+		if (o != null && !o.isEmpty()) {
 			return o.get(0) instanceof Number;
 		}
 

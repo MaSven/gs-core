@@ -32,6 +32,7 @@
 package org.graphstream.graph;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Definition of some compound value that can be used as attribute and can be
@@ -66,7 +67,7 @@ public interface CompoundAttribute {
 	 * 
 	 * @return The conversion of this attribute to a hash.
 	 */
-	HashMap<?, ?> toHashMap();
+	Map<?, ?> toMap();
 
 	/**
 	 * The usual key used to store this attribute inside a graph element.

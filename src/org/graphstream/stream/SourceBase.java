@@ -34,6 +34,7 @@ package org.graphstream.stream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.graphstream.graph.implementations.AbstractElement.AttributeChangeEvent;
 import org.graphstream.stream.sync.SourceTime;
@@ -65,23 +66,23 @@ public abstract class SourceBase implements Source {
 
 	public enum ElementType {
 		NODE, EDGE, GRAPH
-	};
+	}
 
 	/**
 	 * Set of graph attributes sinks.
 	 */
-	protected ArrayList<AttributeSink> attrSinks = new ArrayList<AttributeSink>();
+	protected ArrayList<AttributeSink> attrSinks = new ArrayList<>();
 
 	/**
 	 * Set of graph elements sinks.
 	 */
-	protected ArrayList<ElementSink> eltsSinks = new ArrayList<ElementSink>();
+	protected ArrayList<ElementSink> eltsSinks = new ArrayList<>();
 
 	/**
 	 * A queue that allow the management of events (nodes/edge
 	 * add/delete/change) in the right order.
 	 */
-	protected LinkedList<GraphEvent> eventQueue = new LinkedList<GraphEvent>();
+	protected LinkedList<GraphEvent> eventQueue = new LinkedList<>();
 
 	/**
 	 * A boolean that indicates whether or not an Sink event is being sent
@@ -98,13 +99,15 @@ public abstract class SourceBase implements Source {
 	 * Time of this source.
 	 */
 	protected SourceTime sourceTime;
+	
+	
 
 	// Construction
 
 	protected SourceBase() {
 		this(String.format("sourceOnThread#%d_%d", Thread.currentThread()
 				.getId(), System.currentTimeMillis()
-				+ ((int) (Math.random() * 1000))));
+				+ (new Random().nextInt()* 1000)));
 	}
 
 	protected SourceBase(String sourceId) {

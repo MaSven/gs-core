@@ -33,7 +33,6 @@ package org.graphstream.stream.net;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -42,7 +41,6 @@ import org.graphstream.stream.SourceBase;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 
 /**
  * This source allows to control a graph from a web browser. Control is done
@@ -126,7 +124,9 @@ public class HTTPSource extends SourceBase {
 	/**
 	 * Http server.
 	 */
-	protected final HttpServer server;
+//	protected final HttpServer server;
+	
+	
 
 	/**
 	 * Create a new http source. The source will be available on
@@ -140,130 +140,38 @@ public class HTTPSource extends SourceBase {
 	 * @throws IOException
 	 *             if server creation failed.
 	 */
-	public HTTPSource(String graphId, int port) throws IOException {
-		super(String.format("http://%s", graphId));
-
-		server = HttpServer.create(new InetSocketAddress(port), 4);
-		server.createContext(String.format("/%s/edit", graphId),
-				new EditHandler());
-
+	public HTTPSource(String graphId) {
+		super(String.format("http//%s", graphId));
 	}
-
+	
 	/**
-	 * Start the http server.
+	 * 
+	 * @param nodeId
+	 * @see #sendNodeAdded(String, String)
 	 */
-	public void start() {
-		server.start();
+	protected void sendNodeAdded(final String nodeId) {
+		this.sendNodeAdded(this.sourceId, nodeId);
 	}
-
 	/**
-	 * Stop the http server.
+	 * 
+	 * @param edgeId
+	 * @param from
+	 * @param to
+	 * @param directed
+	 * @see #sendEdgeAdded(String, String, String, String, boolean)
 	 */
-	public void stop() {
-		server.stop(0);
+	protected void sendEdgeAdded(final String edgeId,final String from,final String to,final boolean directed) {
+		this.sendEdgeAdded(this.sourceId, edgeId, from, to, directed);
 	}
-
-	private class EditHandler implements HttpHandler {
-
-		public void handle(HttpExchange ex) throws IOException {
-			HashMap<String, Object> get = GET(ex);
-			Action a;
-
-			try {
-				a = Action.valueOf(get.get("q").toString().toUpperCase());
-			} catch (Exception e) {
-				error(ex, "invalid action");
-				return;
-			}
-
-			switch (a) {
-			case AN:
-				HTTPSource.this.sendNodeAdded(sourceId, get.get("id")
-						.toString());
-				break;
-			case CN:
-				break;
-			case DN:
-				HTTPSource.this.sendNodeRemoved(sourceId, get.get("id")
-						.toString());
-				break;
-			case AE:
-				HTTPSource.this.sendEdgeAdded(sourceId, get.get("id")
-						.toString(), get.get("from").toString(), get.get("to")
-						.toString(), get.containsKey("directed"));
-				break;
-			case CE:
-				break;
-			case DE:
-				HTTPSource.this.sendEdgeRemoved(sourceId, get.get("id")
-						.toString());
-				break;
-			case CG:
-				break;
-			case ST:
-				HTTPSource.this.sendStepBegins(sourceId, Double.valueOf(get
-						.get("step").toString()));
-				break;
-			}
-
-			ex.sendResponseHeaders(200, 0);
-			ex.getResponseBody().close();
-		}
+	
+	protected void sendNodeRemoved(final String nodeId) {
+		this.sendNodeRemoved(this.sourceId, nodeId);
 	}
-
-	protected static void error(HttpExchange ex, String message)
-			throws IOException {
-		byte[] data = message.getBytes();
-
-		ex.sendResponseHeaders(400, data.length);
-		ex.getResponseBody().write(data);
-		ex.getResponseBody().close();
+	
+	protected void sendEdgeRemoved(final String edgeId){
+		this.sendEdgeRemoved(this.sourceId, edgeId);
 	}
-
-	@SuppressWarnings("unchecked")
-	protected static HashMap<String, Object> GET(HttpExchange ex) {
-		HashMap<String, Object> get = new HashMap<String, Object>();
-		String[] args = ex.getRequestURI().getRawQuery().split("[&]");
-
-		for (String arg : args) {
-			String[] kv = arg.split("[=]");
-			String k, v;
-
-			k = null;
-			v = null;
-
-			try {
-				if (kv.length > 0)
-					k = URLDecoder.decode(kv[0], System
-							.getProperty("file.encoding"));
-
-				if (kv.length > 1)
-					v = URLDecoder.decode(kv[1], System
-							.getProperty("file.encoding"));
-
-				if (get.containsKey(k)) {
-					Object o = get.get(k);
-
-					if (o instanceof LinkedList<?>)
-						((LinkedList<Object>) o).add(v);
-					else {
-						LinkedList<Object> l = new LinkedList<Object>();
-						l.add(o);
-						l.add(v);
-						get.put(k, l);
-					}
-				} else {
-					get.put(k, v);
-				}
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return get;
-	}
-
-	static enum Action {
-		AN, CN, DN, AE, CE, DE, CG, ST, CLEAR
+	protected void sendStepBegins(final double step) {
+		this.sendStepBegins(this.sourceId, step);
 	}
 }

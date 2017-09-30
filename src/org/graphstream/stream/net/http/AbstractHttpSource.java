@@ -29,18 +29,11 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
-package org.graphstream.stream.net;
+package org.graphstream.stream.net.http;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.http.entity.ContentType;
 import org.graphstream.stream.SourceBase;
-import org.graphstream.stream.net.Response.AcceptedResponse;
-import org.graphstream.stream.net.Response.JsonError;
-import org.graphstream.stream.net.Response.Response;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import spark.Route;
 import spark.Spark;
@@ -65,15 +58,34 @@ import spark.Spark;
  * <li><code>/step/:step</code> post: take given steps</li>
  *
  * </ul>
+ * <p>
+ * Diagram:
+ * </p>
+ * <img src="async-server.png" alt="Diagram of Async Server Communication" >
+ */
+/*-
+ * @startuml  async-server.png
+ * 			 Client -> Server: /start/init (POST,"URL//:FOR.ACTION.RESPONSES")
+ *           Server -> Client: 202 OK
+ *           Client -> Server : /node:1 (POST)
+ *			 Server -> Client : 202  {"id":1,"Status": "Not Finished"}
+ *			 Client -> Server : /node:2 (POST)
+ *			 Server -> Client : 202  {"id":2,"Status": "Not Finished"}
+ *			 Server -> Client : POST {"id":1,"Status": "Finished","node":{"x":2.3,"y":3.4}}
+ *			 Client -> Server : /node:1  DELETE
+ *			 Server -> Client : 202 OK {"id":3,"Status": "Not Finished"}
+ *    		 Server -> Client : POST {"id":3,"Status":"Finished"}
+ *
+ * @enduml
  *
  */
-public class HTTPSource extends SourceBase {
+public abstract class AbstractHttpSource extends SourceBase {
 
 	/**
 	 * Http server.
 	 */
 
-	final String graphId;
+	final protected String graphId;
 	/**
 	 * URL of the client where updates will be send
 	 *
@@ -81,7 +93,15 @@ public class HTTPSource extends SourceBase {
 	 * adding a node, this URL will be called to notify the client about the update.
 	 * If this is {@link Optional#empty()} all call are sync processed
 	 */
-	private Optional<String> callBackURL = Optional.empty();
+	protected Optional<String> callBackURL = Optional.empty();
+	/**
+	 * <div> Each action has its own id because of the async calls. If one action
+	 * finished, this id will get send to the {@link #callBackURL}. Also the id will
+	 * get send with the response. </div>
+	 *
+	 *
+	 */
+	protected long actionId;
 
 	/**
 	 * Create a new http source. The source will be available on
@@ -93,7 +113,7 @@ public class HTTPSource extends SourceBase {
 	 * @param port
 	 *            port on which server will be bound
 	 */
-	public HTTPSource(final String graphId, final int port) {
+	public AbstractHttpSource(final String graphId, final int port) {
 		super(graphId);
 		Spark.port(port);
 		this.graphId = graphId;
@@ -114,97 +134,62 @@ public class HTTPSource extends SourceBase {
 
 		Spark.path("/" + this.graphId, () -> {
 			Spark.path("/node", () -> {
-				Spark.post("/:id", this.addNode);
-				Spark.delete("/:id", this.deleteNode);
+				Spark.post("/:id", this.addNode());
+				Spark.delete("/:id", this.deleteEdge());
+				Spark.put("/:id",this.updateNode() );
 			});
 			Spark.path("/edge", () -> {
-				Spark.post("/:id/:from/:to/:directed", this.addEdge);
-				Spark.delete("/:id", this.deleteEdge);
+				Spark.post("/:id/:from/:to/:directed", this.addEdge());
+				Spark.delete("/:id", this.deleteEdge());
 			});
 			Spark.path("/step", () -> {
-				Spark.post("/:step", this.takeStep);
+				Spark.post("/:step", this.takeStep());
 			});
 			Spark.path("/start", () -> {
-				Spark.post("/init", this.initServer);
+				Spark.post("/init", this.initServer());
 			});
 		});
 
 	}
+	/**
+	 * Add one Edge to the Graph
+	 * @return {@link Route}
+	 */
+	protected abstract Route addEdge();
+	/**
+	 * Update node in the graph
+	 * @return {@link Route}
+	 */
+	protected abstract Route updateNode();
 
 	/**
-	 * Add {@link #callBackURI} on this server.
+	 * Add one node to the Graph
+	 * @return {@link Route}
 	 */
-	private final Route initServer = (req, resp) -> {
-		final String json = req.body();
-		final JSONObject jsonObject = new JSONObject(json);
-		try {
-			final String url = jsonObject.getString("url");
-			this.callBackURL = Optional.of(url);
-			final Response response = new AcceptedResponse("Accpeted URL", 200);
-			resp.status(202);
-			resp.type(ContentType.APPLICATION_JSON.toString());
-			resp.body(response.toJson());
-		} catch (final JSONException e) {
-			this.callBackURL = Optional.empty();
-			resp.status(400);
-			final JsonError error = new JsonError("Missing Parameter url", 400);
-			resp.body(error.toJson());
-			resp.type(ContentType.APPLICATION_JSON.toString());
-		}
+	protected abstract Route addNode();
+	/**
+	 * Delete one Node from the Graph
+	 * @return {@link Route}
+	 */
+	protected abstract Route deleteNode();
+	/**
+	 * Delete on Edge from the Graph
+	 * @return {@link Route}
+	 */
+	protected abstract Route deleteEdge();
+	/**
+	 * Take one step in the graph
+	 * @return	{@link Route}
+	 */
+	protected abstract Route takeStep();
+	/**
+	 * Init the server
+	 * @return	{@link Route}
+	 */
+	protected abstract Route initServer();
 
-		return resp;
-	};
 
-	/**
-	 * Add Node
-	 */
-	private final Route addNode = (req, resp) -> {
-		this.sendNodeAdded(this.sourceId, req.params(":id"));
-		resp.status(200);
-		resp.type("text");
-		return resp;
-	};
-	/**
-	 * Delete Node
-	 */
-	private final Route deleteNode = (req, resp) -> {
-		this.sendNodeRemoved(this.sourceId, req.params(":id"));
-		resp.status(200);
-		resp.type("text");
-		return resp;
-	};
-	/**
-	 * Add Edge
-	 */
-	private final Route addEdge = (req, resp) -> {
-		this.sendEdgeAdded(this.sourceId, req.params(":id"), req.params(":from"), req.params(":to"),
-				Boolean.getBoolean(req.params("directed")));
-		resp.status(200);
-		resp.type("text");
-		return resp;
-	};
-	/**
-	 * Delete Edge
-	 */
-	private final Route deleteEdge = (req, resp) -> {
-		this.sendEdgeRemoved(this.sourceId, req.params(":id"));
-		resp.status(200);
-		resp.type("text");
-		return resp;
-	};
-	/**
-	 * Take given steps
-	 */
-	private final Route takeStep = (req, resp) -> {
-		if (NumberUtils.isCreatable(req.params(":step"))) {
-			this.sendStepBegins(this.sourceId, Double.parseDouble(req.params(":step")));
-			resp.status(200);
-			resp.type("text");
-			return resp;
-		}
-		resp.status(400);
-		return resp;
 
-	};
+
 
 }

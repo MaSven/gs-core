@@ -13,7 +13,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
-import org.graphstream.stream.net.HTTPSource;
+import org.graphstream.stream.net.http.AbstractHttpSource;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,7 +24,7 @@ public class TestHTTPSource {
 
 	final static String ROOT_URL = "http://localhost:8080/g1";
 
-	static HTTPSource source;
+	static AbstractHttpSource source;
 
 	static Graph graph;
 
@@ -33,7 +33,7 @@ public class TestHTTPSource {
 	 */
 	@BeforeClass
 	public static void setUp() {
-		source = new HTTPSource("g1", 8080);
+		source = new AbstractHttpSource("g1", 8080);
 		graph = new DefaultGraph("g1");
 		source.addSink(graph);
 	}

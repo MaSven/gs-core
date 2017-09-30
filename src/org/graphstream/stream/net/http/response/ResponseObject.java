@@ -1,4 +1,4 @@
-package org.graphstream.stream.net.Response;
+package org.graphstream.stream.net.http.response;
 
 public interface ResponseObject {
 	/**

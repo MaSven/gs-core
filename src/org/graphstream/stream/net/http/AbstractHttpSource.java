@@ -31,9 +31,8 @@
  */
 package org.graphstream.stream.net.http;
 
-import java.util.Optional;
-
-import org.graphstream.stream.SourceBase;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.graphstream.graph.Graph;
 
 import spark.Route;
 import spark.Spark;
@@ -79,21 +78,17 @@ import spark.Spark;
  * @enduml
  *
  */
-public abstract class AbstractHttpSource extends SourceBase {
+public abstract class AbstractHttpSource {
 
 	/**
-	 * Http server.
+	 * Graph on which we take action
 	 */
-
+	final protected Graph graph;
+	/**
+	 * Id/Name of the graph endpoint
+	 */
 	final protected String graphId;
-	/**
-	 * URL of the client where updates will be send
-	 *
-	 * Only used when in Async mode. Each time when a given process finsiched e.g
-	 * adding a node, this URL will be called to notify the client about the update.
-	 * If this is {@link Optional#empty()} all call are sync processed
-	 */
-	protected Optional<String> callBackURL = Optional.empty();
+
 	/**
 	 * <div> Each action has its own id because of the async calls. If one action
 	 * finished, this id will get send to the {@link #callBackURL}. Also the id will
@@ -113,10 +108,10 @@ public abstract class AbstractHttpSource extends SourceBase {
 	 * @param port
 	 *            port on which server will be bound
 	 */
-	public AbstractHttpSource(final String graphId, final int port) {
-		super(graphId);
+	public AbstractHttpSource(final Graph graph, final int port) {
+		this.graph = graph;
 		Spark.port(port);
-		this.graphId = graphId;
+		this.graphId= graph.getId();
 		this.setupRoutes();
 	}
 
@@ -151,6 +146,59 @@ public abstract class AbstractHttpSource extends SourceBase {
 		});
 
 	}
+
+
+	/**
+	 * Add Node
+	 */
+	final Route addNode = (req, resp) -> {
+		this.sendNodeAdded(this.sourceId, req.params(":id"));
+		resp.status(200);
+		resp.type("text");
+		return resp;
+	};
+	/**
+	 * Delete Node
+	 */
+	final Route deleteNode = (req, resp) -> {
+		this.sendNodeRemoved(this.sourceId, req.params(":id"));
+		resp.status(200);
+		resp.type("text");
+		return resp;
+	};
+	/**
+	 * Add Edge
+	 */
+	final Route addEdge = (req, resp) -> {
+		this.sendEdgeAdded(this.sourceId, req.params(":id"), req.params(":from"), req.params(":to"),
+				Boolean.getBoolean(req.params("directed")));
+		resp.status(200);
+		resp.type("text");
+		return resp;
+	};
+	/**
+	 * Delete Edge
+	 */
+	final Route deleteEdge = (req, resp) -> {
+		this.sendEdgeRemoved(this.sourceId, req.params(":id"));
+		resp.status(200);
+		resp.type("text");
+		return resp;
+	};
+	/**
+	 * Take given steps
+	 */
+	final Route takeStep = (req, resp) -> {
+		if (NumberUtils.isCreatable(req.params(":step"))) {
+			this.sendStepBegins(this.sourceId, Double.parseDouble(req.params(":step")));
+			resp.status(200);
+			resp.type("text");
+			return resp;
+		}
+		resp.status(400);
+		return resp;
+
+	};
 	/**
 	 * Add one Edge to the Graph
 	 * @return {@link Route}

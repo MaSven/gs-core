@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,16 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Stefan Balev <stefan.balev@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.graph.implementations;
 
@@ -190,24 +193,21 @@ public class AdjacencyListNode extends AbstractNode {
 	@Override
 	public Edge getEdge(int i) {
 		if (i < 0 || i >= degree)
-			throw new IndexOutOfBoundsException("Node \"" + this + "\""
-					+ " has no edge " + i);
+			throw new IndexOutOfBoundsException("Node \"" + this + "\"" + " has no edge " + i);
 		return edges[i];
 	}
 
 	@Override
 	public Edge getEnteringEdge(int i) {
 		if (i < 0 || i >= getInDegree())
-			throw new IndexOutOfBoundsException("Node \"" + this + "\""
-					+ " has no entering edge " + i);
+			throw new IndexOutOfBoundsException("Node \"" + this + "\"" + " has no entering edge " + i);
 		return edges[i];
 	}
 
 	@Override
 	public Edge getLeavingEdge(int i) {
 		if (i < 0 || i >= getOutDegree())
-			throw new IndexOutOfBoundsException("Node \"" + this + "\""
-					+ " has no edge " + i);
+			throw new IndexOutOfBoundsException("Node \"" + this + "\"" + " has no edge " + i);
 		return edges[ioStart + i];
 	}
 
@@ -273,8 +273,7 @@ public class AdjacencyListNode extends AbstractNode {
 				throw new IllegalStateException();
 			AbstractEdge e = edges[iPrev];
 			// do not call the callback because we already know the index
-			graph.removeEdge(e, true, e.source != AdjacencyListNode.this,
-					e.target != AdjacencyListNode.this);
+			graph.removeEdge(e, true, e.source != AdjacencyListNode.this, e.target != AdjacencyListNode.this);
 			removeEdge(iPrev);
 			iNext = iPrev;
 			iPrev = -1;

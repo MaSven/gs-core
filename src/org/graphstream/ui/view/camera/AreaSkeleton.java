@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,38 +22,23 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
-package org.graphstream.ui.swingViewer.basicRenderer.shapes;
 
-import java.awt.Graphics2D;
+/**
+ * @since 2018-01-18
+ * 
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ */
+package org.graphstream.ui.view.camera;
 
-import org.graphstream.ui.swingViewer.util.GraphMetrics;
+import org.graphstream.ui.geom.Point2;
 
-public abstract class Shape {
-	/**
-	 * Same as calling {@link #renderStroke(Graphics2D,GraphMetrics)} and
-	 * {@link #renderFill(Graphics2D,GraphMetrics)} at once.
-	 * 
-	 * @param g
-	 *            The Swing graphics.
-	 */
-	public void render(Graphics2D g, GraphMetrics metrics) {
-		renderStroke(g, metrics);
-		renderFill(g, metrics);
-	}
+/**
+ * Class used by DefaultCamera, implementation in gs-ui-... Skeleton for nodes
+ * and sprites.
+ */
+public interface AreaSkeleton {
+	public Point2 theSize();
 
-	/**
-	 * Render the stroke of the shape.
-	 * 
-	 * @param g
-	 *            The Swing graphics.
-	 */
-	public abstract void renderStroke(Graphics2D g, GraphMetrics metrics);
-
-	/**
-	 * Render the filled part of the shape.
-	 * 
-	 * @param g
-	 *            The Swing graphics.
-	 */
-	public abstract void renderFill(Graphics2D g, GraphMetrics metrics);
+	public Point2 theCenter();
 }

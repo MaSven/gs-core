@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-12-06
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hans Schulz <hans.schulz@sap.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file;
 
@@ -94,8 +95,8 @@ public class FileSinkGraphML extends FileSinkBase {
 					nodeAttributes.put(k, id);
 
 					try {
-						print("\t<key id=\"%s\" for=\"node\" attr.name=\"%s\" attr.type=\"%s\"/>\n",
-								id, escapeXmlString(k), type);
+						print("\t<key id=\"%s\" for=\"node\" attr.name=\"%s\" attr.type=\"%s\"/>\n", id,
+								escapeXmlString(k), type);
 					} catch (Exception ex) {
 						onException.accept(ex);
 					}
@@ -130,7 +131,8 @@ public class FileSinkGraphML extends FileSinkBase {
 					edgeAttributes.put(k, id);
 
 					try {
-						print("\t<key id=\"%s\" for=\"edge\" attr.name=\"%s\" attr.type=\"%s\"/>\n", id, escapeXmlString(k), type);
+						print("\t<key id=\"%s\" for=\"edge\" attr.name=\"%s\" attr.type=\"%s\"/>\n", id,
+								escapeXmlString(k), type);
 					} catch (Exception ex) {
 						onException.accept(ex);
 					}
@@ -150,8 +152,8 @@ public class FileSinkGraphML extends FileSinkBase {
 
 				n.attributeKeys().forEach(k -> {
 					try {
-						print("\t\t\t<data key=\"%s\">%s</data>\n", nodeAttributes
-								.get(k), escapeXmlString(n.getAttribute(k).toString()));
+						print("\t\t\t<data key=\"%s\">%s</data>\n", nodeAttributes.get(k),
+								escapeXmlString(n.getAttribute(k).toString()));
 					} catch (IOException e) {
 						onException.accept(e);
 					}
@@ -165,12 +167,13 @@ public class FileSinkGraphML extends FileSinkBase {
 
 		g.edges().forEach(e -> {
 			try {
-				print("\t\t<edge id=\"%s\" source=\"%s\" target=\"%s\" directed=\"%s\">\n",
-						e.getId(), e.getSourceNode().getId(), e.getTargetNode().getId(), e.isDirected());
+				print("\t\t<edge id=\"%s\" source=\"%s\" target=\"%s\" directed=\"%s\">\n", e.getId(),
+						e.getSourceNode().getId(), e.getTargetNode().getId(), e.isDirected());
 
 				e.attributeKeys().forEach(k -> {
 					try {
-						print("\t\t\t<data key=\"%s\">%s</data>\n", edgeAttributes.get(k), escapeXmlString(e.getAttribute(k).toString()));
+						print("\t\t\t<data key=\"%s\">%s</data>\n", edgeAttributes.get(k),
+								escapeXmlString(e.getAttribute(k).toString()));
 					} catch (IOException e1) {
 						onException.accept(e1);
 					}
@@ -189,53 +192,47 @@ public class FileSinkGraphML extends FileSinkBase {
 		}
 	}
 
-	public void edgeAttributeAdded(String sourceId, long timeId, String edgeId,
-								   String attribute, Object value) {
+	public void edgeAttributeAdded(String sourceId, long timeId, String edgeId, String attribute, Object value) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void edgeAttributeChanged(String sourceId, long timeId,
-									 String edgeId, String attribute, Object oldValue, Object newValue) {
+	public void edgeAttributeChanged(String sourceId, long timeId, String edgeId, String attribute, Object oldValue,
+			Object newValue) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void edgeAttributeRemoved(String sourceId, long timeId,
-									 String edgeId, String attribute) {
+	public void edgeAttributeRemoved(String sourceId, long timeId, String edgeId, String attribute) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void graphAttributeAdded(String sourceId, long timeId,
-									String attribute, Object value) {
+	public void graphAttributeAdded(String sourceId, long timeId, String attribute, Object value) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void graphAttributeChanged(String sourceId, long timeId,
-									  String attribute, Object oldValue, Object newValue) {
+	public void graphAttributeChanged(String sourceId, long timeId, String attribute, Object oldValue,
+			Object newValue) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void graphAttributeRemoved(String sourceId, long timeId,
-									  String attribute) {
+	public void graphAttributeRemoved(String sourceId, long timeId, String attribute) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void nodeAttributeAdded(String sourceId, long timeId, String nodeId,
-								   String attribute, Object value) {
+	public void nodeAttributeAdded(String sourceId, long timeId, String nodeId, String attribute, Object value) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void nodeAttributeChanged(String sourceId, long timeId,
-									 String nodeId, String attribute, Object oldValue, Object newValue) {
+	public void nodeAttributeChanged(String sourceId, long timeId, String nodeId, String attribute, Object oldValue,
+			Object newValue) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void nodeAttributeRemoved(String sourceId, long timeId,
-									 String nodeId, String attribute) {
+	public void nodeAttributeRemoved(String sourceId, long timeId, String nodeId, String attribute) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void edgeAdded(String sourceId, long timeId, String edgeId,
-						  String fromNodeId, String toNodeId, boolean directed) {
+	public void edgeAdded(String sourceId, long timeId, String edgeId, String fromNodeId, String toNodeId,
+			boolean directed) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -261,14 +258,10 @@ public class FileSinkGraphML extends FileSinkBase {
 
 	private static String escapeXmlString(String string) {
 		/*
-		 * Thankfully, the unescaping part is done by the xml parser
-	     * used in FileSourceGraphML
-	     */
-		return string
-				.replace("&", "&amp;")
-				.replace("<", "&lt;")
-				.replace(">", "&gt;")
-				.replace("\"", "&quot;")
+		 * Thankfully, the unescaping part is done by the xml parser used in
+		 * FileSourceGraphML
+		 */
+		return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
 				.replace("'", "&apos;");
 	}
 }

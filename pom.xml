@@ -55,65 +55,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<!-- The GraphStream Team. Members are sorted in alphabetically. -->
-	<developers>
-		<developer>
-			<id>sbalev</id>
-			<name>Stefan Balev</name>
-			<email>stefan.balev@graphstream-project.org</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</developer>
-
-		<developer>
-			<id>jbaudry</id>
-			<name>Julien Baudry</name>
-			<email>julien.baudry@graphstream-project.org</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</developer>
-
-		<developer>
-			<id>adutot</id>
-			<name>Antoine Dutot</name>
-			<email>antoine.dutot@graphstream-project.org</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</developer>
-
-		<developer>
-			<id>ypigne</id>
-			<name>Yoann Pigné</name>
-			<email>yoann.pigne@graphstream-project.org</email>
-			<organization>University of Luxembourg</organization>
-			<organizationUrl>http://www.uni.lu</organizationUrl>
-		</developer>
-
-		<developer>
-			<id>gsavin</id>
-			<name>Guilhelm Savin</name>
-			<email>guilhelm.savin@graphstream-project.org</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</developer>
-	</developers>
-
-	<contributors>
-		<contributor>
-			<name>Frédéric Guinand</name>
-			<email>frederic.guinand@univ-lehavre.fr</email>
-			<organization>LITIS</organization>
-			<organizationUrl>http://www.litislab.eu</organizationUrl>
-		</contributor>
-
-		<contributor>
-			<name>Richard O. Legendi</name>
-			<email>richard.legendi@univ-lehavre.fr</email>
-			<organization>Eötvös Loránd University, Faculty of Informatics</organization>
-			<organizationUrl>http://people.inf.elte.hu/legendi/</organizationUrl>
-		</contributor>
-	</contributors>
-
 	<licenses>
 		<license>
 			<name>LGPL3</name>
@@ -272,8 +213,55 @@
 				</configuration>
 				<version>2.20</version>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.9</version>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<!-- TODO : Add rules to force code quality (e.g. % of coverage) -->
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<!-- select non-aggregate reports -->
+							<report>report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 
 	<dependencies>
 		<dependency>

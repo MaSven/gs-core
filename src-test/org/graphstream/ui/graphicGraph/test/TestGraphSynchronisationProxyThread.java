@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,14 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.graphicGraph.test;
 
@@ -72,7 +73,7 @@ public class TestGraphSynchronisationProxyThread {
 		Graph main = new MultiGraph("main");
 		ThreadProxyPipe toGraphic = new ThreadProxyPipe();
 		toGraphic.init(main);
-		
+
 		InTheSwingThread viewerThread = new InTheSwingThread(toGraphic);
 		ThreadProxyPipe toMain = viewerThread.getProxy();
 
@@ -170,27 +171,24 @@ public class TestGraphSynchronisationProxyThread {
 		Object xyz2[] = { 2, 1, 0 };
 		Object xyz3[] = { 3, 2, 1 };
 
-		assertArrayEquals(xyz1, (Object[]) main.getNode("A")
-				.getAttribute("xyz"));
-		assertArrayEquals(xyz2, (Object[]) main.getNode("B")
-				.getAttribute("xyz"));
-		assertArrayEquals(xyz3, (Object[]) main.getNode("C")
-				.getAttribute("xyz"));
+		assertArrayEquals(xyz1, (Object[]) main.getNode("A").getAttribute("xyz"));
+		assertArrayEquals(xyz2, (Object[]) main.getNode("B").getAttribute("xyz"));
+		assertArrayEquals(xyz3, (Object[]) main.getNode("C").getAttribute("xyz"));
 
 		assertEquals("foobar", S2.getAttribute("ui.foobar"));
 
 		GraphicSprite gs3 = graphic.getSprite("S3");
 
-		assertEquals(0.5f, S1.getX(),0);
-		assertEquals(0, S1.getY(),0);
-		assertEquals(0, S1.getZ(),0);
-		assertEquals(1, S2.getX(),0);
-		assertEquals(2, S2.getY(),0);
-		assertEquals(3, S2.getZ(),0);
+		assertEquals(0.5f, S1.getX(), 0);
+		assertEquals(0, S1.getY(), 0);
+		assertEquals(0, S1.getZ(), 0);
+		assertEquals(1, S2.getX(), 0);
+		assertEquals(2, S2.getY(), 0);
+		assertEquals(3, S2.getZ(), 0);
 
-		assertEquals(3, gs3.getX(),0);
-		assertEquals(2, gs3.getY(),0);
-		assertEquals(1, gs3.getZ(),0);
+		assertEquals(3, gs3.getX(), 0);
+		assertEquals(2, gs3.getY(), 0);
+		assertEquals(1, gs3.getZ(), 0);
 	}
 
 	protected void sleep(int millis) {

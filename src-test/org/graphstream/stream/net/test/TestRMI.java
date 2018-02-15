@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,13 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2011-05-12
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.net.test;
 
@@ -91,8 +91,7 @@ public class TestRMI {
 		B.setAttribute("string", "test");
 		C.setAttribute("double", 2.0);
 
-		AB.setAttribute("points",
-				(Object) (new double[][] { { 1, 1 }, { 2, 2 } }));
+		AB.setAttribute("points", (Object) (new double[][] { { 1, 1 }, { 2, 2 } }));
 		LinkedList<Integer> list = new LinkedList<Integer>();
 		list.add(1);
 		list.add(2);
@@ -125,11 +124,11 @@ public class TestRMI {
 		assertEquals("C", AC.getNode1().getId());
 		assertEquals("B", BC.getNode0().getId());
 		assertEquals("C", BC.getNode1().getId());
-		
+
 		assertTrue(!AB.isDirected());
 		assertTrue(AC.isDirected());
 		assertTrue(!BC.isDirected());
-		
+
 		assertEquals(A.getAttribute("int"), Integer.valueOf(1));
 		assertEquals(B.getAttribute("string"), "test");
 		assertEquals(C.getNumber("double"), 2.0, 0);

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,11 +22,23 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
-package org.graphstream.ui.view;
 
-import org.graphstream.ui.geom.Point3;
+/**
+ * @since 2009-07-26
+ * 
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ */
+package org.graphstream.ui.view.camera;
+
+import java.util.Collection;
+import java.util.EnumSet;
+
 import org.graphstream.ui.graphicGraph.GraphicElement;
-import org.graphstream.ui.swingViewer.util.GraphMetrics;
+import org.graphstream.ui.graphicGraph.GraphicGraph;
+import org.graphstream.ui.view.util.GraphMetrics;
+import org.graphstream.ui.view.util.InteractiveElement;
+import org.graphstream.ui.geom.Point3;
 
 public interface Camera {
 	/**
@@ -58,8 +63,8 @@ public interface Camera {
 	/**
 	 * The portion of the graph visible.
 	 * 
-	 * @return A real for which value 1 means the graph is fully visible and
-	 *         uses the whole view port.
+	 * @return A real for which value 1 means the graph is fully visible and uses
+	 *         the whole view port.
 	 */
 	double getViewPercent();
 
@@ -79,8 +84,7 @@ public interface Camera {
 	double getViewRotation();
 
 	/**
-	 * Rotate the view around its centre point by a given theta angles (in
-	 * degrees).
+	 * Rotate the view around its centre point by a given theta angles (in degrees).
 	 * 
 	 * @param theta
 	 *            The rotation angle in degrees.
@@ -88,10 +92,9 @@ public interface Camera {
 	void setViewRotation(double theta);
 
 	/**
-	 * A number in GU that gives the approximate graph size (often the diagonal
-	 * of the graph). This allows to compute displacements in the graph as
-	 * percent of its overall size. For example this can be used to move the
-	 * view centre.
+	 * A number in GU that gives the approximate graph size (often the diagonal of
+	 * the graph). This allows to compute displacements in the graph as percent of
+	 * its overall size. For example this can be used to move the view centre.
 	 * 
 	 * @return The graph estimated size in graph units.
 	 */
@@ -105,8 +108,8 @@ public interface Camera {
 	void removeGraphViewport();
 
 	/**
-	 * Specify exactly the minimum and maximum points in GU that are visible
-	 * (more points may be visible due to aspect-ratio constraints).
+	 * Specify exactly the minimum and maximum points in GU that are visible (more
+	 * points may be visible due to aspect-ratio constraints).
 	 * 
 	 * @param minx
 	 *            The minimum abscissa visible.
@@ -141,20 +144,19 @@ public interface Camera {
 	 * @param maxz
 	 *            Highest depth.
 	 */
-	void setBounds(double minx, double miny, double minz, double maxx,
-			double maxy, double maxz);
+	void setBounds(double minx, double miny, double minz, double maxx, double maxy, double maxz);
 
 	/**
-	 * Get the {@link org.graphstream.ui.swingViewer.util.GraphMetrics} object linked to this Camera. It can be used
-	 * to convert pixels to graphic units and vice versa.
+	 * Get the {@link org.graphstream.ui.swingViewer.util.GraphMetrics} object
+	 * linked to this Camera. It can be used to convert pixels to graphic units and
+	 * vice versa.
 	 * 
 	 * @return a GraphMetrics instance
 	 */
 	GraphMetrics getMetrics();
-	
+
 	/**
-	 * Enable or disable automatic adjustment of the view to see the entire
-	 * graph.
+	 * Enable or disable automatic adjustment of the view to see the entire graph.
 	 * 
 	 * @param on
 	 *            If true, automatic adjustment is enabled.
@@ -167,12 +169,11 @@ public interface Camera {
 	 * @return The transformed point.
 	 */
 	Point3 transformGuToPx(double x, double y, double z);
-	
+
 	/**
 	 * Return the given point in pixels converted in graph units (GU) using the
-	 * inverse transformation of the current projection matrix. The inverse
-	 * matrix is computed only once each time a new projection matrix is
-	 * created.
+	 * inverse transformation of the current projection matrix. The inverse matrix
+	 * is computed only once each time a new projection matrix is created.
 	 * 
 	 * @param x
 	 *            The source point abscissa in pixels.
@@ -181,18 +182,22 @@ public interface Camera {
 	 * @return The resulting points in graph units.
 	 */
 	Point3 transformPxToGu(double x, double y);
-	
+
 	/**
 	 * True if the element would be visible on screen. The method used is to
-	 * transform the center of the element (which is always in graph units)
-	 * using the camera actual transformation to put it in pixel units. Then to
-	 * look in the style sheet the size of the element and to test if its
-	 * enclosing rectangle intersects the view port. For edges, its two nodes
-	 * are used.
+	 * transform the center of the element (which is always in graph units) using
+	 * the camera actual transformation to put it in pixel units. Then to look in
+	 * the style sheet the size of the element and to test if its enclosing
+	 * rectangle intersects the view port. For edges, its two nodes are used.
 	 * 
 	 * @param element
 	 *            The element to test.
 	 * @return True if the element is visible and therefore must be rendered.
 	 */
 	boolean isVisible(GraphicElement element);
+
+	GraphicElement findGraphicElementAt(GraphicGraph graph, EnumSet<InteractiveElement> types, double x, double y);
+
+	Collection<GraphicElement> allGraphicElementsIn(GraphicGraph graph, EnumSet<InteractiveElement> types, double x1,
+			double y1, double x2, double y2);
 }

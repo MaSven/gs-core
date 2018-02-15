@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,16 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Alex Bowen <bowen.a@gmail.com>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.ui.graphicGraph;
 
@@ -108,8 +111,7 @@ public class GraphicSprite extends GraphicElement {
 	}
 
 	/**
-	 * Return the graphic object this sprite is attached to or null if not
-	 * attached.
+	 * Return the graphic object this sprite is attached to or null if not attached.
 	 * 
 	 * @return A graphic object or null if no attachment.
 	 */
@@ -172,23 +174,23 @@ public class GraphicSprite extends GraphicElement {
 	@Override
 	public void move(double x, double y, double z) {
 
-		if (isAttachedToNode()){
+		if (isAttachedToNode()) {
 			GraphicNode n = getNodeAttachment();
 			x -= n.x;
 			y -= n.y;
 			z -= n.z;
 			setPosition(x, y, z, Style.Units.GU);
 
-		} else if (isAttachedToEdge()){
+		} else if (isAttachedToEdge()) {
 			GraphicEdge e = getEdgeAttachment();
 			double len = e.to.x - e.from.x;
 			double diff = x - e.from.x;
-			x = diff/len;
+			x = diff / len;
 			setPosition(x);
 
 		} else {
 			setPosition(x, y, z, Style.Units.GU);
-			
+
 		}
 	}
 
@@ -264,8 +266,7 @@ public class GraphicSprite extends GraphicElement {
 	 * @param z
 	 *            Third coordinate.
 	 * @param units
-	 *            The units to use for lengths and radii, null means
-	 *            "unchanged".
+	 *            The units to use for lengths and radii, null means "unchanged".
 	 */
 	public void setPosition(double x, double y, double z, Style.Units units) {
 		/*
@@ -333,19 +334,17 @@ public class GraphicSprite extends GraphicElement {
 	}
 
 	@Override
-	protected void attributeChanged(AttributeChangeEvent event,
-			String attribute, Object oldValue, Object newValue) {
+	protected void attributeChanged(AttributeChangeEvent event, String attribute, Object oldValue, Object newValue) {
 		super.attributeChanged(event, attribute, oldValue, newValue);
 
 		// if( attribute.equals( "ui.clicked" ) ) // Filter the clicks to avoid
 		// loops XXX BAD !!! XXX
 		// return;
 
-		String completeAttr = String.format("ui.sprite.%s.%s", getId(),
-				attribute);
+		String completeAttr = String.format("ui.sprite.%s.%s", getId(), attribute);
 
-		mygraph.listeners.sendAttributeChangedEvent(mygraph.getId(),
-				ElementType.GRAPH, completeAttr, event, oldValue, newValue);
+		mygraph.listeners.sendAttributeChangedEvent(mygraph.getId(), ElementType.GRAPH, completeAttr, event, oldValue,
+				newValue);
 	}
 
 	@Override

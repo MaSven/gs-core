@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,9 +22,18 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ */
 package org.graphstream.ui.graphicGraph.test;
 
-import java.awt.Color;
+import org.graphstream.ui.graphicGraph.stylesheet.Color;
 import java.util.HashSet;
 
 import org.graphstream.graph.*;
@@ -125,9 +127,8 @@ public class TestGraphicGraph {
 		assertEquals(0, outGraph.getSpriteCount());
 	}
 
-	protected static String styleSheet1 = "graph  { fill-color: black; }"
-			+ "node   { fill-color: white; }" + "edge   { fill-color: white; }"
-			+ "node#A { fill-color: red;   }" + "node#B { fill-color: blue;  }";
+	protected static String styleSheet1 = "graph  { fill-color: black; }" + "node   { fill-color: white; }"
+			+ "edge   { fill-color: white; }" + "node#A { fill-color: red;   }" + "node#B { fill-color: blue;  }";
 
 	@Test
 	public void testStyleSheetLoading() {
@@ -204,8 +205,7 @@ public class TestGraphicGraph {
 	}
 
 	protected void testStyle(Style style, Color colorBase) {
-		assertTrue(style.getFillColors() != null
-				&& style.getFillColors().size() == 1);
+		assertTrue(style.getFillColors() != null && style.getFillColors().size() == 1);
 		Color color = style.getFillColor(0);
 		assertEquals(StyleConstants.FillMode.PLAIN, style.getFillMode());
 		assertEquals(StyleConstants.StrokeMode.NONE, style.getStrokeMode());
@@ -310,7 +310,8 @@ public class TestGraphicGraph {
 		spriteIds.add("S1");
 		spriteIds.add("S2");
 
-		outGraph.sprites().filter(sprite -> spriteIds.contains(sprite.getId())).forEach(sprite -> spriteIds.remove(sprite.getId()));
+		outGraph.sprites().filter(sprite -> spriteIds.contains(sprite.getId()))
+				.forEach(sprite -> spriteIds.remove(sprite.getId()));
 
 		assertTrue(spriteIds.isEmpty());
 

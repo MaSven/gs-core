@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,16 +22,23 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
-package org.graphstream.ui.swingViewer.util;
 
-import org.graphstream.ui.geom.Point3;
-import org.graphstream.ui.geom.Vector3;
-import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants;
-import org.graphstream.ui.graphicGraph.stylesheet.Value;
-import org.graphstream.ui.graphicGraph.stylesheet.Values;
-import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants.Units;
+/**
+ * @since 2009-07-26
+ * 
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ */
+package org.graphstream.ui.view.util;
 
 import java.util.logging.Logger;
+
+import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants;
+import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants.Units;
+import org.graphstream.ui.graphicGraph.stylesheet.Value;
+import org.graphstream.ui.graphicGraph.stylesheet.Values;
+import org.graphstream.ui.geom.Point3;
+import org.miv.pherd.geom.Vector3;
 
 /**
  * p Various geometric informations on the graphic graph.
@@ -56,10 +56,10 @@ import java.util.logging.Logger;
  */
 public class GraphMetrics {
 
-    /**
-     * class level logger
-     */
-    private static final Logger logger = Logger.getLogger(GraphMetrics.class.getSimpleName());
+	/**
+	 * class level logger
+	 */
+	private static final Logger logger = Logger.getLogger(GraphMetrics.class.getSimpleName());
 
 	// Attribute
 
@@ -195,7 +195,7 @@ public class GraphMetrics {
 	public double lengthToGu(double value, StyleConstants.Units units) {
 		switch (units) {
 		case PX:
-			//return (value - 0.01f) / ratioPx2Gu;
+			// return (value - 0.01f) / ratioPx2Gu;
 			return value / ratioPx2Gu;
 		case PERCENTS:
 			return (diagonal * value);
@@ -219,8 +219,8 @@ public class GraphMetrics {
 	 * Convert one of the given values in a given units to graph units.
 	 * 
 	 * @param values
-	 *            The values set containing the value to convert (it contains
-	 *            its own units).
+	 *            The values set containing the value to convert (it contains its
+	 *            own units).
 	 * @param index
 	 *            Index of the value to convert.
 	 */
@@ -240,7 +240,7 @@ public class GraphMetrics {
 	public double lengthToPx(double value, StyleConstants.Units units) {
 		switch (units) {
 		case GU:
-			//return (value - 0.01f) * ratioPx2Gu;
+			// return (value - 0.01f) * ratioPx2Gu;
 			return value * ratioPx2Gu;
 		case PERCENTS:
 			return (diagonal * value) * ratioPx2Gu;
@@ -264,8 +264,8 @@ public class GraphMetrics {
 	 * Convert one of the given values in a given units pixels.
 	 * 
 	 * @param values
-	 *            The values set containing the value to convert (it contains
-	 *            its own units).
+	 *            The values set containing the value to convert (it contains its
+	 *            own units).
 	 * @param index
 	 *            Index of the value to convert.
 	 */
@@ -290,14 +290,13 @@ public class GraphMetrics {
 		}
 
 		logger.fine(String.format("%spixel[%d] %d --> %fgu", this, index, pixels, l));
-		
+
 		return l;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(String
-				.format("Graph Metrics :%n"));
+		StringBuilder builder = new StringBuilder(String.format("Graph Metrics :%n"));
 
 		builder.append(String.format("        lo         = %s%n", lo));
 		builder.append(String.format("        hi         = %s%n", hi));
@@ -306,8 +305,7 @@ public class GraphMetrics {
 		builder.append(String.format("        size       = %s%n", size));
 		builder.append(String.format("        diag       = %f%n", diagonal));
 		builder.append(String.format("        viewport   = %s%n", viewport));
-		builder.append(String.format("        ratio      = %fpx = 1gu%n",
-				ratioPx2Gu));
+		builder.append(String.format("        ratio      = %fpx = 1gu%n", ratioPx2Gu));
 
 		return builder.toString();
 	}
@@ -330,8 +328,8 @@ public class GraphMetrics {
 	}
 
 	/**
-	 * The ratio to pass by multiplication from pixels to graph units. This
-	 * ratio must be larger than zero, else nothing is changed.
+	 * The ratio to pass by multiplication from pixels to graph units. This ratio
+	 * must be larger than zero, else nothing is changed.
 	 * 
 	 * @param ratio
 	 *            The ratio.
@@ -340,9 +338,10 @@ public class GraphMetrics {
 		if (ratio > 0) {
 			ratioPx2Gu = ratio;
 			px1 = 0.95f / ratioPx2Gu;
-		}
-		else if(ratio == 0) throw new RuntimeException("ratio PX to GU cannot be zero");
-		else if(ratio < 0) throw new RuntimeException(String.format("ratio PX to GU cannot be negative (%f)",ratio)) ;
+		} else if (ratio == 0)
+			throw new RuntimeException("ratio PX to GU cannot be zero");
+		else if (ratio < 0)
+			throw new RuntimeException(String.format("ratio PX to GU cannot be negative (%f)", ratio));
 	}
 
 	/**
@@ -361,8 +360,7 @@ public class GraphMetrics {
 	 * @param maxz
 	 *            Highest depth.
 	 */
-	public void setBounds(double minx, double miny, double minz, double maxx,
-			double maxy, double maxz) {
+	public void setBounds(double minx, double miny, double minz, double maxx, double maxy, double maxz) {
 		lo.x = minx;
 		lo.y = miny;
 		lo.z = minz;
@@ -373,7 +371,6 @@ public class GraphMetrics {
 		size.data[0] = hi.x - lo.x;
 		size.data[1] = hi.y - lo.y;
 		size.data[2] = hi.z - lo.z;
-		diagonal = Math.sqrt(size.data[0] * size.data[0] + size.data[1]
-				* size.data[1] + size.data[2] * size.data[2]);
+		diagonal = Math.sqrt(size.data[0] * size.data[0] + size.data[1] * size.data[1] + size.data[2] * size.data[2]);
 	}
 }

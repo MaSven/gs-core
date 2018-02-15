@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,19 +22,18 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
-package org.graphstream.graph;
 
-public class NullAttributeException extends RuntimeException {
-	/**
-	 * Serializable uid.
-	 */
-	private static final long serialVersionUID = 8227620372327862335L;
+/**
+ * @since 2017-11-08
+ * 
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ */
+package org.graphstream.util;
 
-	public NullAttributeException() {
-		super("Attribute does not exist or is not of the expected type");
-	}
-	
-	public NullAttributeException(String message) {
-		super("Attribute does not exist or is not of the expected type: "+message);
-	}
+import org.graphstream.graph.Graph;
+import org.graphstream.ui.view.Viewer;
+
+public interface Display {
+	public Viewer display(Graph graph, boolean autoLayout);
 }

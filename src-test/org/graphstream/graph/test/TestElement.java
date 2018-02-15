@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,6 +22,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
+
+/**
+ * @since 2011-05-11
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author kitskub <kitskub@gmail.com>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
 package org.graphstream.graph.test;
 
 import static org.junit.Assert.*;
@@ -38,9 +40,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.graphstream.graph.CompoundAttribute;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.NullAttributeException;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.junit.Test;
@@ -136,9 +136,9 @@ public class TestElement {
 		assertEquals(3.1415, A.getAttribute("pi"));
 
 		A.setAttribute("pi", "3.1415");
-		
+
 		assertEquals(3.1415, A.getNumber("pi"), 0);
-		
+
 		// Vector of numbers.
 
 		ArrayList<Number> numbers = new ArrayList<>();
@@ -185,7 +185,7 @@ public class TestElement {
 
 		// Hashes 2.
 
-		MyAttribute attr = new MyAttribute();
+		HashMap<String, String> attr = new HashMap<>();
 
 		attr.put("A", "a");
 		attr.put("B", "b");
@@ -195,7 +195,7 @@ public class TestElement {
 
 		assertEquals(5, A.getAttributeCount());
 		assertTrue(A.hasAttribute("ca"));
-		assertTrue(A.hasAttribute("ca", MyAttribute.class));
+		assertTrue(A.hasAttribute("ca", HashMap.class));
 		assertFalse(A.hasLabel("ca"));
 		assertFalse(A.hasNumber("ca"));
 		assertFalse(A.hasVector("ca"));
@@ -255,7 +255,7 @@ public class TestElement {
 		A.setAttribute("I", "i");
 		A.setAttribute("Z", "z");
 
-		String s = A.getFirstAttributeOf(String.class,"A", "B", "C", "I", "Z");
+		String s = A.getFirstAttributeOf(String.class, "A", "B", "C", "I", "Z");
 
 		assertNotNull(s);
 		assertEquals("c", s);
@@ -265,8 +265,7 @@ public class TestElement {
 		A.setAttribute("J", 1);
 		A.setAttribute("X", 2);
 
-		Number n = A.getFirstAttributeOf(Number.class, "A", "B", "C", "I", "J",
-				"X", "Z");
+		Number n = A.getFirstAttributeOf(Number.class, "A", "B", "C", "I", "J", "X", "Z");
 
 		assertNotNull(n);
 		assertEquals(1, n);
@@ -313,18 +312,5 @@ public class TestElement {
 
 		assertFalse(graph.hasAttribute("foo"));
 		assertFalse(graph.hasAttribute("bar"));
-	}
-
-	protected static class MyAttribute extends HashMap<String, String>
-			implements CompoundAttribute {
-		private static final long serialVersionUID = 1L;
-
-		public String getKey() {
-			return "MyAttribute";
-		}
-
-		public HashMap<?, ?> toHashMap() {
-			return this;
-		}
 	}
 }

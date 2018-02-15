@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2010-02-18
+ * 
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream;
 
@@ -77,29 +79,28 @@ public class GraphReplay extends SourceBase implements Source {
 	/**
 	 * Echo each element and attribute of the graph to the registered sinks.
 	 *
-	 * @param graph The graph to export.
+	 * @param graph
+	 *            The graph to export.
 	 */
 	public void replay(Graph graph) {
-		graph.attributeKeys().forEach(key ->
-			sendGraphAttributeAdded(sourceId, key, graph.getAttribute(key)));
+		graph.attributeKeys().forEach(key -> sendGraphAttributeAdded(sourceId, key, graph.getAttribute(key)));
 
 		graph.nodes().forEach(node -> {
 			String nodeId = node.getId();
 			sendNodeAdded(sourceId, nodeId);
 
 			if (node.getAttributeCount() > 0)
-				node.attributeKeys().forEach(key ->
-					sendNodeAttributeAdded(sourceId, nodeId, key, node.getAttribute(key)));
+				node.attributeKeys()
+						.forEach(key -> sendNodeAttributeAdded(sourceId, nodeId, key, node.getAttribute(key)));
 		});
 
 		graph.edges().forEach(edge -> {
 			String edgeId = edge.getId();
-			sendEdgeAdded(sourceId, edgeId, edge.getNode0().getId(), edge
-					.getNode1().getId(), edge.isDirected());
+			sendEdgeAdded(sourceId, edgeId, edge.getNode0().getId(), edge.getNode1().getId(), edge.isDirected());
 
 			if (edge.getAttributeCount() > 0)
-				edge.attributeKeys().forEach(key ->
-					sendEdgeAttributeAdded(sourceId, edgeId, key, edge.getAttribute(key)));
+				edge.attributeKeys()
+						.forEach(key -> sendEdgeAttributeAdded(sourceId, edgeId, key, edge.getAttribute(key)));
 		});
 	}
 }

@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,16 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-02-19
+ * 
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Stefan Balev <stefan.balev@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.graph.implementations;
 
@@ -81,22 +84,22 @@ public class AdjacencyListGraph extends AbstractGraph {
 	 * @param strictChecking
 	 *            If true any non-fatal error throws an exception.
 	 * @param autoCreate
-	 *            If true (and strict checking is false), nodes are
-	 *            automatically created when referenced when creating a edge,
-	 *            even if not yet inserted in the graph.
+	 *            If true (and strict checking is false), nodes are automatically
+	 *            created when referenced when creating a edge, even if not yet
+	 *            inserted in the graph.
 	 * @param initialNodeCapacity
-	 *            Initial capacity of the node storage data structures. Use this
-	 *            if you know the approximate maximum number of nodes of the
-	 *            graph. The graph can grow beyond this limit, but storage
-	 *            reallocation is expensive operation.
+	 *            Initial capacity of the node storage data structures. Use this if
+	 *            you know the approximate maximum number of nodes of the graph. The
+	 *            graph can grow beyond this limit, but storage reallocation is
+	 *            expensive operation.
 	 * @param initialEdgeCapacity
-	 *            Initial capacity of the edge storage data structures. Use this
-	 *            if you know the approximate maximum number of edges of the
-	 *            graph. The graph can grow beyond this limit, but storage
-	 *            reallocation is expensive operation.
+	 *            Initial capacity of the edge storage data structures. Use this if
+	 *            you know the approximate maximum number of edges of the graph. The
+	 *            graph can grow beyond this limit, but storage reallocation is
+	 *            expensive operation.
 	 */
-	public AdjacencyListGraph(String id, boolean strictChecking, boolean autoCreate,
-			int initialNodeCapacity, int initialEdgeCapacity) {
+	public AdjacencyListGraph(String id, boolean strictChecking, boolean autoCreate, int initialNodeCapacity,
+			int initialEdgeCapacity) {
 		super(id, strictChecking, autoCreate);
 
 		setNodeFactory(new NodeFactory<AdjacencyListNode>() {
@@ -106,10 +109,8 @@ public class AdjacencyListGraph extends AbstractGraph {
 		});
 
 		setEdgeFactory(new EdgeFactory<AbstractEdge>() {
-			public AbstractEdge newInstance(String id, Node src, Node dst,
-					boolean directed) {
-				return new AbstractEdge(id, (AbstractNode) src,
-						(AbstractNode) dst, directed);
+			public AbstractEdge newInstance(String id, Node src, Node dst, boolean directed) {
+				return new AbstractEdge(id, (AbstractNode) src, (AbstractNode) dst, directed);
 			}
 		});
 
@@ -118,10 +119,8 @@ public class AdjacencyListGraph extends AbstractGraph {
 		if (initialEdgeCapacity < DEFAULT_EDGE_CAPACITY)
 			initialEdgeCapacity = DEFAULT_EDGE_CAPACITY;
 
-		nodeMap = new HashMap<String, AbstractNode>(
-				4 * initialNodeCapacity / 3 + 1);
-		edgeMap = new HashMap<String, AbstractEdge>(
-				4 * initialEdgeCapacity / 3 + 1);
+		nodeMap = new HashMap<String, AbstractNode>(4 * initialNodeCapacity / 3 + 1);
+		edgeMap = new HashMap<String, AbstractEdge>(4 * initialEdgeCapacity / 3 + 1);
 		nodeArray = new AbstractNode[initialNodeCapacity];
 		edgeArray = new AbstractEdge[initialEdgeCapacity];
 		nodeCount = edgeCount = 0;
@@ -135,13 +134,12 @@ public class AdjacencyListGraph extends AbstractGraph {
 	 * @param strictChecking
 	 *            If true any non-fatal error throws an exception.
 	 * @param autoCreate
-	 *            If true (and strict checking is false), nodes are
-	 *            automatically created when referenced when creating a edge,
-	 *            even if not yet inserted in the graph.
+	 *            If true (and strict checking is false), nodes are automatically
+	 *            created when referenced when creating a edge, even if not yet
+	 *            inserted in the graph.
 	 */
 	public AdjacencyListGraph(String id, boolean strictChecking, boolean autoCreate) {
-		this(id, strictChecking, autoCreate, DEFAULT_NODE_CAPACITY,
-				DEFAULT_EDGE_CAPACITY);
+		this(id, strictChecking, autoCreate, DEFAULT_NODE_CAPACITY, DEFAULT_EDGE_CAPACITY);
 	}
 
 	/**
@@ -227,8 +225,7 @@ public class AdjacencyListGraph extends AbstractGraph {
 	@Override
 	public Edge getEdge(int index) {
 		if (index < 0 || index >= edgeCount)
-			throw new IndexOutOfBoundsException("Edge " + index
-					+ " does not exist");
+			throw new IndexOutOfBoundsException("Edge " + index + " does not exist");
 		return edgeArray[index];
 	}
 
@@ -245,8 +242,7 @@ public class AdjacencyListGraph extends AbstractGraph {
 	@Override
 	public Node getNode(int index) {
 		if (index < 0 || index > nodeCount)
-			throw new IndexOutOfBoundsException("Node " + index
-					+ " does not exist");
+			throw new IndexOutOfBoundsException("Node " + index + " does not exist");
 		return nodeArray[index];
 	}
 

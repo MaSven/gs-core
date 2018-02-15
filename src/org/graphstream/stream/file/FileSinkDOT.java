@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -28,6 +21,15 @@
  * 
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
+ */
+
+/**
+ * @since 2009-05-11
+ * 
+ * @author Yoann Pigné <yoann.pigne@graphstream-project.org>
+ * @author Antoine Dutot <antoine.dutot@graphstream-project.org>
+ * @author Guilhelm Savin <guilhelm.savin@graphstream-project.org>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
  */
 package org.graphstream.stream.file;
 
@@ -112,8 +114,8 @@ public class FileSinkDOT extends FileSinkBase {
 		String graphId = graph.getId();
 		AtomicLong timeId = new AtomicLong(0);
 
-		graph.attributeKeys().forEach(key ->
-			graphAttributeAdded(graphId, timeId.getAndIncrement(), key, graph.getAttribute(key)));
+		graph.attributeKeys()
+				.forEach(key -> graphAttributeAdded(graphId, timeId.getAndIncrement(), key, graph.getAttribute(key)));
 
 		for (Node node : graph) {
 			String nodeId = node.getId();
@@ -151,56 +153,46 @@ public class FileSinkDOT extends FileSinkBase {
 		out.printf("}%n");
 	}
 
-	public void edgeAttributeAdded(String graphId, long timeId, String edgeId,
-			String attribute, Object value) {
+	public void edgeAttributeAdded(String graphId, long timeId, String edgeId, String attribute, Object value) {
 		// NOP
 	}
 
-	public void edgeAttributeChanged(String graphId, long timeId,
-			String edgeId, String attribute, Object oldValue, Object newValue) {
+	public void edgeAttributeChanged(String graphId, long timeId, String edgeId, String attribute, Object oldValue,
+			Object newValue) {
 		// NOP
 	}
 
-	public void edgeAttributeRemoved(String graphId, long timeId,
-			String edgeId, String attribute) {
+	public void edgeAttributeRemoved(String graphId, long timeId, String edgeId, String attribute) {
 		// NOP
 	}
 
-	public void graphAttributeAdded(String graphId, long timeId,
-			String attribute, Object value) {
+	public void graphAttributeAdded(String graphId, long timeId, String attribute, Object value) {
 		out.printf("\tgraph [ %s ];%n", outputAttribute(attribute, value, true));
 	}
 
-	public void graphAttributeChanged(String graphId, long timeId,
-			String attribute, Object oldValue, Object newValue) {
-		out.printf("\tgraph [ %s ];%n",
-				outputAttribute(attribute, newValue, true));
+	public void graphAttributeChanged(String graphId, long timeId, String attribute, Object oldValue, Object newValue) {
+		out.printf("\tgraph [ %s ];%n", outputAttribute(attribute, newValue, true));
 	}
 
-	public void graphAttributeRemoved(String graphId, long timeId,
-			String attribute) {
+	public void graphAttributeRemoved(String graphId, long timeId, String attribute) {
 		// NOP
 	}
 
-	public void nodeAttributeAdded(String graphId, long timeId, String nodeId,
-			String attribute, Object value) {
-		out.printf("\t\"%s\" [ %s ];%n", nodeId,
-				outputAttribute(attribute, value, true));
+	public void nodeAttributeAdded(String graphId, long timeId, String nodeId, String attribute, Object value) {
+		out.printf("\t\"%s\" [ %s ];%n", nodeId, outputAttribute(attribute, value, true));
 	}
 
-	public void nodeAttributeChanged(String graphId, long timeId,
-			String nodeId, String attribute, Object oldValue, Object newValue) {
-		out.printf("\t\"%s\" [ %s ];%n", nodeId,
-				outputAttribute(attribute, newValue, true));
+	public void nodeAttributeChanged(String graphId, long timeId, String nodeId, String attribute, Object oldValue,
+			Object newValue) {
+		out.printf("\t\"%s\" [ %s ];%n", nodeId, outputAttribute(attribute, newValue, true));
 	}
 
-	public void nodeAttributeRemoved(String graphId, long timeId,
-			String nodeId, String attribute) {
+	public void nodeAttributeRemoved(String graphId, long timeId, String nodeId, String attribute) {
 		// NOP
 	}
 
-	public void edgeAdded(String graphId, long timeId, String edgeId,
-			String fromNodeId, String toNodeId, boolean directed) {
+	public void edgeAdded(String graphId, long timeId, String edgeId, String fromNodeId, String toNodeId,
+			boolean directed) {
 		if (digraph) {
 			out.printf("\t\"%s\" -> \"%s\"", fromNodeId, toNodeId);
 
@@ -234,19 +226,17 @@ public class FileSinkDOT extends FileSinkBase {
 
 	// Utility
 	/*
-	 * protected void outputAttributes(Map<String, Object> attributes, What
-	 * what) throws IOException { out.printf(" [");
+	 * protected void outputAttributes(Map<String, Object> attributes, What what)
+	 * throws IOException { out.printf(" [");
 	 * 
 	 * boolean first = true;
 	 * 
-	 * for (String key : attributes.keySet()) { Object value =
-	 * attributes.get(key);
+	 * for (String key : attributes.keySet()) { Object value = attributes.get(key);
 	 * 
 	 * if (what == What.NODE) { // if( ! nodeForbiddenAttrs.contains( key ) ) {
-	 * first = outputAttribute(key, value, first); } } else if (what ==
-	 * What.EDGE) { // if( ! edgeForbiddenAttrs.contains( key ) ) { first =
-	 * outputAttribute(key, value, first); } } else { first =
-	 * outputAttribute(key, value, first); }
+	 * first = outputAttribute(key, value, first); } } else if (what == What.EDGE) {
+	 * // if( ! edgeForbiddenAttrs.contains( key ) ) { first = outputAttribute(key,
+	 * value, first); } } else { first = outputAttribute(key, value, first); }
 	 * 
 	 * }
 	 * 
@@ -258,8 +248,7 @@ public class FileSinkDOT extends FileSinkBase {
 		if (value instanceof Number)
 			quote = false;
 
-		return String.format("%s\"%s\"=%s%s%s", first ? "" : ",", key,
-				quote ? "\"" : "", value, quote ? "\"" : "");
+		return String.format("%s\"%s\"=%s%s%s", first ? "" : ",", key, quote ? "\"" : "", value, quote ? "\"" : "");
 	}
 
 	protected String outputAttributes(Element e) {
@@ -276,8 +265,8 @@ public class FileSinkDOT extends FileSinkBase {
 			if (value instanceof Number)
 				quote = false;
 
-			buffer.append(String.format("%s\"%s\"=%s%s%s", first.get() ? "" : ",",
-					key, quote ? "\"" : "", value, quote ? "\"" : ""));
+			buffer.append(String.format("%s\"%s\"=%s%s%s", first.get() ? "" : ",", key, quote ? "\"" : "", value,
+					quote ? "\"" : ""));
 
 			first.set(false);
 		});

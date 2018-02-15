@@ -1,11 +1,4 @@
 /*
- * Copyright 2006 - 2016
- *     Stefan Balev     <stefan.balev@graphstream-project.org>
- *     Julien Baudry    <julien.baudry@graphstream-project.org>
- *     Antoine Dutot    <antoine.dutot@graphstream-project.org>
- *     Yoann Pigné      <yoann.pigne@graphstream-project.org>
- *     Guilhelm Savin   <guilhelm.savin@graphstream-project.org>
- * 
  * This file is part of GraphStream <http://graphstream-project.org>.
  * 
  * GraphStream is a library whose purpose is to handle static or dynamic
@@ -29,13 +22,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-C and LGPL licenses and that you accept their terms.
  */
-package org.graphstream.ui.swingViewer;
 
-import java.awt.Container;
-import java.awt.Graphics2D;
+/**
+ * @since 2009-02-19
+ * 
+ * @author Beau Tremblay <trembb01@nightcrawler.pfizer.com>
+ * @author Hicham Brahimi <hicham.brahimi@graphstream-project.org>
+ */
+package org.graphstream.ui.view.util;
 
-import org.graphstream.ui.view.GraphRenderer;
-
-public interface SwingGraphRenderer extends GraphRenderer<Container, Graphics2D> {
-
+public enum InteractiveElement {
+	NODE, EDGE, SPRITE
 }
